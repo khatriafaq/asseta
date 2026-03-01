@@ -35,6 +35,9 @@ COPY --from=builder /app/.venv /app/.venv
 COPY --chown=appuser:appuser app ./app
 COPY --chown=appuser:appuser alembic ./alembic
 COPY --chown=appuser:appuser alembic.ini ./
+COPY --chown=appuser:appuser start.sh ./
+
+RUN chmod +x start.sh
 
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -42,8 +45,8 @@ ENV PATH="/app/.venv/bin:$PATH" \
 
 USER appuser
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')" || exit 1
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:${PORT:-8000}/health')" || exit 1
 
 EXPOSE 8000
 
@@ -51,4 +54,5 @@ LABEL org.opencontainers.image.title="Asseta API" \
       org.opencontainers.image.description="Shariah-Compliant FinTech Portfolio Management" \
       org.opencontainers.image.version="0.1.0"
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# start.sh: runs `alembic upgrade head` then starts uvicorn on $PORT (injected by Render)
+CMD ["./start.sh"]
