@@ -1,0 +1,40 @@
+[project]
+name = "asseta"
+version = "0.1.0"
+description = "Asseta — Shariah-Compliant FinTech Portfolio Management"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlmodel",
+    "psycopg2-binary",
+    "python-jose[cryptography]>=3.5.0",
+    "pydantic-settings>=2.12.0",
+    "pwdlib[argon2]>=0.3.0",
+    "python-multipart>=0.0.21",
+    "alembic",
+    "redis",
+    "apscheduler>=3.10.0",
+    "beautifulsoup4",
+    "scipy",
+    "numpy",
+    "openpyxl",
+    "httpx",
+    "google-genai>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "ruff",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
